@@ -22,24 +22,24 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     await update.message.reply_html(
-        f"Hi {user.mention_html()}!\n\nStart sending messages with me to generate a response.\n\nSend /new to start a new chat session.",
+        f"Hi {user.mention_html()}!\n\nشروع کن به پیام دادن تا ربات جواب بده .\n\nیا بفرست /new برای آغاز مکالمه ای جدید با ربات.",
     )
 
 
 async def help_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     help_text = """
-Basic commands:
-/start - Start the bot
-/help - Get help. Shows this message
+دستورات پایه و ساده :
+/start - آغاز صحبت با ربات 
+/help - دریافت کمک و نشان دادن این پیام 
 
 Chat commands:
-/new - Start a new chat session (model will forget previously generated messages)
-/model - Change the model used to generate responses.
-/system_prompt - Change the system prompt used for new chat sessions.
-/info - Get info about the current chat session.
+/new - آغاز مکالمه ای جدید با ربات  (مکالمات قبلی شما فراموش میشود)
+/model - تعویض مدل رباتی که با اون چت میکنید .
+/system_prompt - تعویض دستور سیستمی به ربات برای اجرا.
+/info - دریافت اطلاعات راجب این ربات.
 
-Send a message to the bot to generate a response.
+شروع کن به پیام دادن تا ربات جواب بده .
 """
     await update.message.reply_text(help_text)
     
@@ -47,7 +47,7 @@ Send a message to the bot to generate a response.
 async def new_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Start a new chat session"""
     new_chat(context)
-    await update.message.reply_text("New chat session started.\n\nSwitch models with /model.")
+    await update.message.reply_text("مکالمه جدید آغاز شد .\n\nبرای تعویض مدل بات دستور روبرو رو بفرست  /model.")
     
 
 async def model_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -60,7 +60,7 @@ async def model_command_handler(update: Update, context: ContextTypes.DEFAULT_TY
         ]
     )
     
-    await update.message.reply_text("Select a model:", reply_markup=reply_markup)
+    await update.message.reply_text("یک مدل انتخاب کن :", reply_markup=reply_markup)
     
     
 async def change_model_callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -70,12 +70,12 @@ async def change_model_callback_handler(update: Update, context: ContextTypes.DE
     
     context.chat_data["model"] = chatbot.llms.index(chatbot.get_llm_from_name(model))
     
-    await query.edit_message_text(f"Model changed to `{model}`. \n\nSend /new to start a new chat session.", parse_mode=ParseMode.MARKDOWN)
+    await query.edit_message_text(f"مدل تغییر کرد به  `{model}`. \n\nارسال کن /new برای شروع یک چت جدید با بات.", parse_mode=ParseMode.MARKDOWN)
     
 
 async def start_system_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Start a system prompt"""
-    await update.message.reply_text("Send me a system prompt. If you want to clear the system prompt, send `clear` now.")
+    await update.message.reply_text("برای من یک دستور سیستم ارسال کن و در غیر این صورت برای پاک کردن دستور سیستم کلمه `clear` رو الان ارسال کن .")
     return SYSTEM_PROMPT_SP
     
     
@@ -105,7 +105,7 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     if "conversation_id" not in context.chat_data:
         new_chat(context)
         
-    init_msg = await update.message.reply_text("Generating response...")
+    init_msg = await update.message.reply_text("در حال دریافت پاسخ")
     
     conversation_id = context.chat_data["conversation_id"]
     chatbot.change_conversation(conversation_id)
